@@ -301,9 +301,8 @@ func (a *API) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 
 	dumpFile, err := os.OpenFile("./request.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
-	defer dumpFile.Close()
-	dealErr(err)
 	_, err = io.WriteString(dumpFile, fmt.Sprintf("[%s]%s\n", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr))
+	dumpFile.Close()
 	dealErr(err)
 
 	if u == APIROOT+"/status" {
