@@ -299,6 +299,11 @@ func (a *API) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	u := req.URL.String()
 	w.Header().Add("Content-Type", "application/json")
 
+	dumpFile, err := os.OpenFile("./request.log", os.O_CREATE|os.O_APPEND, 0755)
+	dealErr(err)
+	dumpFile.WriteString(fmt.Sprintf("[%s]%s", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr))
+	dumpFile.Close()
+
 	if u == APIROOT+"/status" {
 		fmt.Fprintf(w, "%v", string(GetVirusStatus().GetVirusStatusJSON()))
 		return
