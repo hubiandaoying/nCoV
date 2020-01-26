@@ -68,7 +68,7 @@ func GetVirusStatus() *MainStatus {
 		v.DeadCount = pp[0]["deadCount"].(float64)
 	}
 	if pp[0]["useTotal"] != nil {
-		v.UseTotal = pp[0]["useTotal"].(bool)
+		//v.UseTotal = pp[0]["useTotal"].(bool)
 	}
 	if pp[0]["hintWords"] != nil {
 		v.HintWords = pp[0]["hintWords"].(string)
@@ -301,7 +301,7 @@ func (a *API) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	dumpFile, err := os.OpenFile("./request.log", os.O_CREATE|os.O_APPEND, 0755)
 	dealErr(err)
-	dumpFile.WriteString(fmt.Sprintf("[%s]%s", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr))
+	fmt.Fprintf(dumpFile,"[%s]%s", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr)
 	dumpFile.Close()
 
 	if u == APIROOT+"/status" {
