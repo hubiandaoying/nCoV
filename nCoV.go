@@ -186,7 +186,7 @@ func (a *Area) GetAreaStatusJSON() []byte {
 
 // Dump Dump current data into a file
 func Dump(data interface{}) {
-	f, err := os.OpenFile("./dump-"+time.Now().Format("2006-01-02")+".log", os.O_CREATE|os.O_APPEND, 0755)
+	f, err := os.OpenFile("./dump-"+time.Now().Format("2006-01-02")+".log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 	dealErr(err)
 	defer f.Close()
 	io.WriteString(f, fmt.Sprintf("%v", data))
@@ -194,7 +194,7 @@ func Dump(data interface{}) {
 
 // DumpSimple Dump current main data into a file
 func DumpSimple(data interface{}) {
-	f, err := os.OpenFile("./dump-simple-"+time.Now().Format("2006-01-02")+".log", os.O_CREATE|os.O_APPEND, 0755)
+	f, err := os.OpenFile("./dump-simple-"+time.Now().Format("2006-01-02")+".log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 	dealErr(err)
 	defer f.Close()
 	io.WriteString(f, fmt.Sprintf("%v", data))
@@ -300,7 +300,7 @@ func (a *API) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	u := req.URL.String()
 	w.Header().Add("Content-Type", "application/json")
 
-	dumpFile, err := os.OpenFile("./request.log", os.O_CREATE|os.O_APPEND, 0755)
+	dumpFile, err := os.OpenFile("./request.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 	defer dumpFile.Close()
 	dealErr(err)
 	_, err = io.WriteString(dumpFile, fmt.Sprintf("[%s]%s\n", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr))
