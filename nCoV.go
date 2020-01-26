@@ -3,6 +3,7 @@ package ncov
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -188,7 +189,7 @@ func Dump(data interface{}) {
 	f, err := os.OpenFile("./dump-"+time.Now().Format("2006-01-02")+".log", os.O_CREATE|os.O_APPEND, 0755)
 	dealErr(err)
 	defer f.Close()
-	fmt.Fprintf(f, "%v", data)
+	io.WriteString(f, fmt.Sprintf("%v", data))
 }
 
 // DumpSimple Dump current main data into a file
@@ -196,7 +197,7 @@ func DumpSimple(data interface{}) {
 	f, err := os.OpenFile("./dump-simple-"+time.Now().Format("2006-01-02")+".log", os.O_CREATE|os.O_APPEND, 0755)
 	dealErr(err)
 	defer f.Close()
-	fmt.Fprintf(f, "%v", data)
+	io.WriteString(f, fmt.Sprintf("%v", data))
 }
 
 // -----------------------------
@@ -300,9 +301,10 @@ func (a *API) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 
 	dumpFile, err := os.OpenFile("./request.log", os.O_CREATE|os.O_APPEND, 0755)
-	dealErr(err)
-	fmt.Fprintf(dumpFile, "[%s]%s", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr)
 	defer dumpFile.Close()
+	dealErr(err)
+	_, err = io.WriteString(dumpFile, fmt.Sprintf("[%s]%s\n", time.Now().Format("2006-01-02 15:04:05"), req.RemoteAddr))
+	dealErr(err)
 
 	if u == APIROOT+"/status" {
 		fmt.Fprintf(w, "%v", string(GetVirusStatus().GetVirusStatusJSON()))
