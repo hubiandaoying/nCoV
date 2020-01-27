@@ -20,8 +20,8 @@ func main() {
 	log.Printf("\n>> 新型冠状病毒疫情实时监控系统 <<\n")
 	serverStartd := make(chan bool, 1)
 	go func() {
+		<-serverStartd
 		for {
-			<-serverStartd
 			vm := ncov.GetVirusStatus()
 			allAreaStatus := ncov.GetAllAreaStatus()
 			fmt.Printf("%s\n", vm.GetString())
